@@ -1,4 +1,5 @@
 from app.config.items import ITEMS
+from app.database.database import Database
 from app.services.market_analyzer import MarketAnalyzer
 from app.services.market_cleaner import MarketCleaner
 from app.services.torn_api import TornAPI
@@ -10,6 +11,9 @@ class MarketService:
         self.api = TornAPI()
         self.cleaner = MarketCleaner()
         self.analyzer = MarketAnalyzer()
+
+        self.database = Database()
+        self.database.create_tables()
 
     def get_market(self, item_name: str):
 

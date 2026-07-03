@@ -34,11 +34,6 @@ class TornAPI:
 
             data = response.json()
 
-            # DEBUG
-            print("\n===== PAGE =====")
-            print(data["_metadata"])
-            print(f"Listings on this page: {len(data['itemmarket']['listings'])}")
-
             if item_info is None:
              item_info = data["itemmarket"]["item"]
 
