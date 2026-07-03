@@ -17,14 +17,38 @@ class TornAPI:
         self.api_key = API_KEY
 
     def get_item_market(self, item_id: int):
-        url = f"{BASE_URL}/market/{item_id}/itemmarket"
 
         headers = {
             "Authorization": f"ApiKey {self.api_key}"
         }
 
-        response = requests.get(url, headers=headers)
+        url = f"{BASE_URL}/market/{item_id}/itemmarket"
 
-        response.raise_for_status()
+        all_listings = []
+        item_info = None
 
-        return response.json()
+        while url:
+
+            response = requests.get(url, headers=headers)
+            response.raise_for_status()
+
+            data = response.json()
+
+            # DEBUG
+            print("\n===== PAGE =====")
+            print(data["_metadata"])
+            print(f"Listings on this page: {len(data['itemmarket']['listings'])}")
+
+            if item_info is None:
+             item_info = data["itemmarket"]["item"]
+
+            all_listings.extend(data["itemmarket"]["listings"])
+
+            url = data["_metadata"]["links"]["next"]
+
+        return {
+            "itemmarket": {
+                "item": item_info,
+                "listings": all_listings
+            }
+        }
