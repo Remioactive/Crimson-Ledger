@@ -1,10 +1,12 @@
 from fastapi import FastAPI, HTTPException
-from app.services.torn_api import TornAPI
+
+from app.config.items import ITEMS
 from app.services.market_analyzer import MarketAnalyzer
+from app.services.torn_api import TornAPI
 
 app = FastAPI(
     title="Crimson Ledger",
-    version="0.1.0"
+    version="0.4.1"
 )
 
 api = TornAPI()
@@ -22,7 +24,9 @@ def home():
 @app.get("/market/o-plus")
 def o_plus_market():
     try:
-        data = api.get_item_market(738)
+        data = api.get_item_market(
+            ITEMS["o_plus"]["id"]
+        )
 
         return analyzer.analyze(data)
 
