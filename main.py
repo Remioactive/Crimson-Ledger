@@ -6,7 +6,7 @@ from app.services.torn_api import TornAPI
 
 app = FastAPI(
     title="Crimson Ledger",
-    version="0.4.1"
+    version="0.4.2"
 )
 
 api = TornAPI()
@@ -21,12 +21,20 @@ def home():
     }
 
 
-@app.get("/market/o-plus")
-def o_plus_market():
-    try:
-        data = api.get_item_market(
-            ITEMS["o_plus"]["id"]
+@app.get("/market/{item_name}")
+def market(item_name: str):
+
+    if item_name not in ITEMS:
+        raise HTTPException(
+            status_code=404,
+            detail=f"Unknown item '{item_name}'"
         )
+
+    try:
+
+        item = ITEMS[item_name]
+
+        data = api.get_item_market(item["id"])
 
         return analyzer.analyze(data)
 
