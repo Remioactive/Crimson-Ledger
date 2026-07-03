@@ -1,5 +1,10 @@
 # 🩸 Crimson Ledger
 
+![Version](https://img.shields.io/badge/Version-v0.8.1-crimson)
+![Python](https://img.shields.io/badge/Python-3.14-blue)
+![FastAPI](https://img.shields.io/badge/FastAPI-0.116-green)
+![Status](https://img.shields.io/badge/Status-Active-success)
+
 A market intelligence platform for the Torn Item Market, focused on blood bag trading.
 
 Crimson Ledger analyzes the live market, stores historical data, and provides tools to identify buying opportunities through price tracking, supply analysis, and historical trends.
