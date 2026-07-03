@@ -2,14 +2,16 @@ from fastapi import FastAPI, HTTPException
 
 from app.config.items import ITEMS
 from app.services.market_analyzer import MarketAnalyzer
+from app.services.market_cleaner import MarketCleaner
 from app.services.torn_api import TornAPI
 
 app = FastAPI(
     title="Crimson Ledger",
-    version="0.4.2"
+    version="0.4.3"
 )
 
 api = TornAPI()
+cleaner = MarketCleaner()
 analyzer = MarketAnalyzer()
 
 
@@ -24,6 +26,9 @@ def home():
 @app.get("/market/{item_name}")
 def market(item_name: str):
 
+    # Allow both o-plus and o_plus
+    item_name = item_name.replace("-", "_")
+
     if item_name not in ITEMS:
         raise HTTPException(
             status_code=404,
@@ -35,6 +40,11 @@ def market(item_name: str):
         item = ITEMS[item_name]
 
         data = api.get_item_market(item["id"])
+
+        data = cleaner.clean(
+            data,
+            item["max_price_multiplier"]
+        )
 
         return analyzer.analyze(data)
 
