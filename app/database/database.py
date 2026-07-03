@@ -76,3 +76,46 @@ class Database:
             ))
 
             connection.commit()
+
+    def get_latest_snapshot(self, item_key):
+
+        with self.get_connection() as connection:
+
+            connection.row_factory = sqlite3.Row
+
+            cursor = connection.cursor()
+
+            cursor.execute("""
+                SELECT *
+                FROM market_snapshots
+                WHERE item_key = ?
+                ORDER BY timestamp DESC
+                LIMIT 1
+            """, (item_key,))
+
+            row = cursor.fetchone()
+
+            if row is None:
+                return None
+
+            return dict(row)
+
+    def get_snapshot_history(self, item_key, limit=100):
+
+        with self.get_connection() as connection:
+
+            connection.row_factory = sqlite3.Row
+
+            cursor = connection.cursor()
+
+            cursor.execute("""
+                SELECT *
+                FROM market_snapshots
+                WHERE item_key = ?
+                ORDER BY timestamp DESC
+                LIMIT ?
+            """, (item_key, limit))
+
+            rows = cursor.fetchall()
+
+            return [dict(row) for row in rows]
