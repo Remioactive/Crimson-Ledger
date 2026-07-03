@@ -1,10 +1,11 @@
 from fastapi import FastAPI
 
 from app.routes.market import router as market_router
+from app.routes.scanner import router as scanner_router
 
 app = FastAPI(
     title="Crimson Ledger",
-    version="0.6.0"
+    version="0.8.0"
 )
 
 
@@ -17,3 +18,4 @@ def home():
 
 
 app.include_router(market_router)
+app.include_router(scanner_router)
