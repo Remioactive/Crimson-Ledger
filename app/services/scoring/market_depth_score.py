@@ -4,14 +4,33 @@ class MarketDepthScore:
 
     def calculate(self, analytics):
 
-        buy100 = analytics["buy100_average"]
-        buy500 = analytics["buy500_average"]
-        buy1000 = analytics["buy1000_average"]
+        buy100 = analytics.get("buy100_average")
+        buy500 = analytics.get("buy500_average")
+        buy1000 = analytics.get("buy1000_average")
 
-        spread = (
-            (buy1000 - buy100)
-            / buy100
-        ) * 100
+        # Not enough data to calculate market depth
+        if (
+            buy100 is None
+            or buy500 is None
+            or buy1000 is None
+        ):
+            return {
+                "category": "Market Depth",
+                "score": 0,
+                "max_score": self.MAX_SCORE,
+                "reason": "Not enough market depth data available."
+            }
+
+        # Prevent division by zero
+        if buy100 <= 0:
+            return {
+                "category": "Market Depth",
+                "score": 0,
+                "max_score": self.MAX_SCORE,
+                "reason": "Invalid market depth data."
+            }
+
+        spread = ((buy1000 - buy100) / buy100) * 100
 
         if spread <= 2:
             score = 20

@@ -43,7 +43,11 @@ class HistoryService:
             "history": history
         }
 
-    def get_analytics(self, item_name: str, hours: int = 24):
+    def get_analytics(
+        self,
+        item_name: str,
+        hours: int = 24
+    ):
 
         item_name = item_name.replace("-", "_")
 
@@ -55,17 +59,22 @@ class HistoryService:
             hours
         )
 
+        if not snapshots:
+            raise ValueError(f"No history found for '{item_name}'")
+
         analytics = self.analytics.summarize(
             ITEMS[item_name]["name"],
             snapshots
         )
 
-        signals = self.signals.generate(analytics)
+        signals = self.signals.generate(
+            analytics
+        )
 
         analytics["signals"] = signals
 
         analytics.update(
-            self.buy_score.calculate(signals)
+            self.buy_score.calculate(analytics)
         )
 
         return analytics

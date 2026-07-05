@@ -49,28 +49,3 @@ def snapshot_history(
             status_code=500,
             detail=str(e)
         )
-
-
-@router.get("/{item_name}/analytics")
-def market_analytics(
-    item_name: str,
-    hours: int = 24
-):
-
-    try:
-        return history_service.get_analytics(
-            item_name,
-            hours
-        )
-
-    except ValueError as e:
-        raise HTTPException(
-            status_code=404,
-            detail=str(e)
-        )
-
-    except Exception as e:
-        raise HTTPException(
-            status_code=500,
-            detail=str(e)
-        )

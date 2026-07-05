@@ -6,7 +6,7 @@ class MarketCleaner:
     Removes invalid or unrealistic listings before analysis.
     """
 
-    def clean(self, market_data: Dict, max_multiplier: int) -> Dict:
+    def clean(self, market_data: Dict, max_multiplier: int) -> List[Dict]:
 
         item = market_data["itemmarket"]["item"]
         listings: List[Dict] = market_data["itemmarket"]["listings"]
@@ -30,8 +30,12 @@ class MarketCleaner:
             if price > max_price:
                 continue
 
-            cleaned.append(listing)
+            cleaned.append({
+                "item_name": item["name"],
+                "price": price,
+                "quantity": amount
+            })
 
-        market_data["itemmarket"]["listings"] = cleaned
+        cleaned.sort(key=lambda x: x["price"])
 
-        return market_data
+        return cleaned

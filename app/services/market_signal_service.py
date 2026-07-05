@@ -1,42 +1,36 @@
 class MarketSignalService:
 
-    def generate(self, analytics: dict):
+    def generate(self, analytics):
 
         signals = []
 
-        # Price Signal
+        price = analytics["price_difference_percent"]
 
-        price_percent = analytics["price_difference_percent"]
-
-        if price_percent <= -5:
+        if price <= -5:
             signals.append({
                 "type": "price",
                 "impact": "very_positive",
-                "weight": 35,
                 "message": "Current price is well below the historical average."
             })
 
-        elif price_percent <= -2:
+        elif price <= -2:
             signals.append({
                 "type": "price",
                 "impact": "positive",
-                "weight": 20,
                 "message": "Current price is below the historical average."
             })
 
-        elif price_percent >= 5:
+        elif price >= 5:
             signals.append({
                 "type": "price",
                 "impact": "very_negative",
-                "weight": -35,
                 "message": "Current price is well above the historical average."
             })
 
-        elif price_percent >= 2:
+        elif price >= 2:
             signals.append({
                 "type": "price",
                 "impact": "negative",
-                "weight": -20,
                 "message": "Current price is above the historical average."
             })
 
@@ -44,43 +38,36 @@ class MarketSignalService:
             signals.append({
                 "type": "price",
                 "impact": "neutral",
-                "weight": 0,
-                "message": "Current price is close to the historical average."
+                "message": "Current price is close to average."
             })
 
-        # Supply Signal
+        supply = analytics["supply_difference_percent"]
 
-        supply_percent = analytics["supply_difference_percent"]
-
-        if supply_percent >= 10:
+        if supply >= 10:
             signals.append({
                 "type": "supply",
                 "impact": "very_positive",
-                "weight": 20,
                 "message": "Supply is much higher than normal."
             })
 
-        elif supply_percent >= 3:
+        elif supply >= 3:
             signals.append({
                 "type": "supply",
                 "impact": "positive",
-                "weight": 10,
                 "message": "Supply is above average."
             })
 
-        elif supply_percent <= -10:
+        elif supply <= -10:
             signals.append({
                 "type": "supply",
                 "impact": "very_negative",
-                "weight": -20,
                 "message": "Supply is much lower than normal."
             })
 
-        elif supply_percent <= -3:
+        elif supply <= -3:
             signals.append({
                 "type": "supply",
                 "impact": "negative",
-                "weight": -10,
                 "message": "Supply is below average."
             })
 
@@ -88,44 +75,31 @@ class MarketSignalService:
             signals.append({
                 "type": "supply",
                 "impact": "neutral",
-                "weight": 0,
                 "message": "Supply is close to normal."
             })
-
-        # Volatility Signal
 
         volatility = analytics["volatility"]
 
         if volatility < 2:
-            signals.append({
-                "type": "volatility",
-                "impact": "positive",
-                "weight": 15,
-                "message": "Market volatility is very low."
-            })
+            impact = "positive"
+            message = "Market volatility is very low."
 
         elif volatility < 5:
-            signals.append({
-                "type": "volatility",
-                "impact": "positive",
-                "weight": 10,
-                "message": "Market volatility is low."
-            })
+            impact = "positive"
+            message = "Market volatility is low."
 
         elif volatility < 10:
-            signals.append({
-                "type": "volatility",
-                "impact": "neutral",
-                "weight": 0,
-                "message": "Market volatility is moderate."
-            })
+            impact = "neutral"
+            message = "Market volatility is moderate."
 
         else:
-            signals.append({
-                "type": "volatility",
-                "impact": "negative",
-                "weight": -15,
-                "message": "Market volatility is high."
-            })
+            impact = "negative"
+            message = "Market volatility is high."
+
+        signals.append({
+            "type": "volatility",
+            "impact": impact,
+            "message": message
+        })
 
         return signals
