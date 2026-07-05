@@ -30,13 +30,28 @@ class ValueScore:
         else:
             score = 0
 
+        if percent > 0:
+            direction = "above"
+        elif percent < 0:
+            direction = "below"
+        else:
+            direction = "equal to"
+
+        if direction == "equal to":
+            reason = (
+                "Current price is equal to "
+                "the historical average."
+            )
+        else:
+            reason = (
+                f"Current price is "
+                f"{abs(percent):.2f}% {direction} "
+                f"the historical average."
+            )
+
         return {
             "category": "Value",
             "score": score,
             "max_score": self.MAX_SCORE,
-            "reason": (
-                f"Current price is "
-                f"{percent:.2f}% compared to "
-                f"the historical average."
-            )
+            "reason": reason
         }
