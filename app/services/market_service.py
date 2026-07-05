@@ -35,6 +35,17 @@ class MarketService:
 
         analysis["key"] = item_name
 
+        # Save snapshot
+        self.database.save_snapshot(
+            item_key=item_name,
+            lowest_price=analysis["lowest_price"],
+            listing_count=analysis["listing_count"],
+            total_quantity=analysis["total_quantity"],
+            buy100_average=analysis["buy100"]["average_price"],
+            buy500_average=analysis["buy500"]["average_price"],
+            buy1000_average=analysis["buy1000"]["average_price"]
+        )
+
         return analysis
 
     def get_market_summary(self):

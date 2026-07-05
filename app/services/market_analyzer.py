@@ -1,86 +1,74 @@
-from typing import Dict, List
+from statistics import mean
 
 
 class MarketAnalyzer:
 
-    def cost_to_buy(self, listings: List[Dict], quantity_needed: int):
-        """
-        Calculates the total cost and average price required to buy
-        a specific quantity of items from the cheapest listings.
-        """
+    BUY_AMOUNTS = (100, 500, 1000)
 
-        remaining = quantity_needed
-        total_cost = 0
+    def analyze(self, listings):
 
-        for listing in listings:
-            available = listing["amount"]
-            price = listing["price"]
-
-            buy = min(remaining, available)
-
-            total_cost += buy * price
-            remaining -= buy
-
-            if remaining == 0:
-                break
-
-        if remaining > 0:
-            return None
-
-        return {
-            "quantity": quantity_needed,
-            "total_cost": total_cost,
-            "average_price": round(total_cost / quantity_needed, 2)
-        }
-
-    def analyze(self, market_data: Dict) -> Dict:
-
-        listings: List[Dict] = market_data["itemmarket"]["listings"]
-        item = market_data["itemmarket"]["item"]
-
-        # Sort listings from cheapest to most expensive
-        listings = sorted(listings, key=lambda x: x["price"])
+        if not listings:
+            raise ValueError("No market listings found.")
 
         prices = [listing["price"] for listing in listings]
-        quantities = [listing["amount"] for listing in listings]
+        quantities = [listing["quantity"] for listing in listings]
 
         total_quantity = sum(quantities)
 
-        weighted_value = sum(
-            listing["price"] * listing["amount"]
-            for listing in listings
-        )
-
-        weighted_average = (
-            weighted_value / total_quantity
-            if total_quantity > 0
-            else 0
-        )
-
-        top5 = prices[:5]
-        top10 = prices[:10]
-
-        buy100 = self.cost_to_buy(listings, 100)
-        buy500 = self.cost_to_buy(listings, 500)
-        buy1000 = self.cost_to_buy(listings, 1000)
-
-        return {
-            "item": item["name"],
-            "item_id": item["id"],
-
-            "market_average": item["average_price"],
-
-            "lowest_price": prices[0],
-            "highest_price": prices[-1],
-
+        analysis = {
+            "item": listings[0]["item_name"],
+            "lowest_price": min(prices),
+            "highest_price": max(prices),
             "listing_count": len(listings),
             "total_quantity": total_quantity,
-
-            "weighted_average": round(weighted_average, 2),
-            "top5_average": round(sum(top5) / len(top5), 2),
-            "top10_average": round(sum(top10) / len(top10), 2),
-
-            "buy100": buy100,
-            "buy500": buy500,
-            "buy1000": buy1000
+            "weighted_average": round(
+                sum(
+                    listing["price"] * listing["quantity"]
+                    for listing in listings
+                ) / total_quantity,
+                2
+            ),
+            "top5_average": round(mean(prices[:5]), 2),
+            "top10_average": round(mean(prices[:10]), 2),
         }
+
+        for amount in self.BUY_AMOUNTS:
+            analysis[f"buy{amount}_average"] = self.calculate_buy_average(
+                listings,
+                amount
+            )
+
+        return analysis
+
+    def calculate_buy_average(
+        self,
+        listings,
+        amount
+    ):
+
+        remaining = amount
+        total_cost = 0
+
+        for listing in listings:
+
+            if remaining <= 0:
+                break
+
+            purchased = min(
+                remaining,
+                listing["quantity"]
+            )
+
+            total_cost += purchased * listing["price"]
+
+            remaining -= purchased
+
+        purchased_total = amount - remaining
+
+        if purchased_total == 0:
+            return None
+
+        return round(
+            total_cost / purchased_total,
+            2
+        )

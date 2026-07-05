@@ -1,7 +1,6 @@
 import sqlite3
 from pathlib import Path
 
-# Create the data directory if it doesn't exist
 DATA_DIR = Path("data")
 DATA_DIR.mkdir(exist_ok=True)
 
@@ -20,23 +19,27 @@ class Database:
             cursor = connection.cursor()
 
             cursor.execute("""
-            CREATE TABLE IF NOT EXISTS market_snapshots (
+                CREATE TABLE IF NOT EXISTS market_snapshots (
 
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
 
-                timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+                    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
 
-                item_key TEXT NOT NULL,
+                    item_key TEXT NOT NULL,
 
-                lowest_price INTEGER NOT NULL,
+                    lowest_price INTEGER NOT NULL,
 
-                buy500_average REAL NOT NULL,
+                    listing_count INTEGER NOT NULL,
 
-                listing_count INTEGER NOT NULL,
+                    total_quantity INTEGER NOT NULL,
 
-                total_quantity INTEGER NOT NULL
+                    buy100_average REAL NOT NULL,
 
-            )
+                    buy500_average REAL NOT NULL,
+
+                    buy1000_average REAL NOT NULL
+
+                )
             """)
 
             connection.commit()
@@ -45,9 +48,11 @@ class Database:
         self,
         item_key,
         lowest_price,
-        buy500_average,
         listing_count,
-        total_quantity
+        total_quantity,
+        buy100_average,
+        buy500_average,
+        buy1000_average
     ):
 
         with self.get_connection() as connection:
@@ -55,23 +60,27 @@ class Database:
             cursor = connection.cursor()
 
             cursor.execute("""
-            INSERT INTO market_snapshots (
+                INSERT INTO market_snapshots (
 
-                item_key,
-                lowest_price,
-                buy500_average,
-                listing_count,
-                total_quantity
+                    item_key,
+                    lowest_price,
+                    listing_count,
+                    total_quantity,
+                    buy100_average,
+                    buy500_average,
+                    buy1000_average
 
-            )
-            VALUES (?, ?, ?, ?, ?)
+                )
+                VALUES (?, ?, ?, ?, ?, ?, ?)
             """, (
 
                 item_key,
                 lowest_price,
-                buy500_average,
                 listing_count,
-                total_quantity
+                total_quantity,
+                buy100_average,
+                buy500_average,
+                buy1000_average
 
             ))
 
@@ -115,6 +124,30 @@ class Database:
                 ORDER BY timestamp DESC
                 LIMIT ?
             """, (item_key, limit))
+
+            rows = cursor.fetchall()
+
+            return [dict(row) for row in rows]
+
+    def get_snapshot_history_by_hours(
+        self,
+        item_key,
+        hours=24
+    ):
+
+        with self.get_connection() as connection:
+
+            connection.row_factory = sqlite3.Row
+
+            cursor = connection.cursor()
+
+            cursor.execute("""
+                SELECT *
+                FROM market_snapshots
+                WHERE item_key = ?
+                  AND timestamp >= datetime('now', ?)
+                ORDER BY timestamp DESC
+            """, (item_key, f"-{hours} hours"))
 
             rows = cursor.fetchall()
 
