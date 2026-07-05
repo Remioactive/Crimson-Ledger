@@ -340,3 +340,173 @@ body {
     color:#888;
     font-size:.9rem;
 }
+
+/* ---------- Signals ---------- */
+
+.signal-badge{
+    padding:10px 14px;
+    border-radius:10px;
+    margin-bottom:10px;
+    font-size:.9rem;
+    border:1px solid;
+}
+
+.signal-positive{
+    background:#0f2f1d;
+    border-color:#22c55e;
+    color:#86efac;
+}
+
+.signal-neutral{
+    background:#2d2d2d;
+    border-color:#555;
+    color:#ddd;
+}
+
+.signal-negative{
+    background:#3b1717;
+    border-color:#ef4444;
+    color:#fecaca;
+}
+
+.detail-score{
+    display:flex;
+    justify-content:space-between;
+    margin:18px 0 10px;
+    font-size:1rem;
+    font-weight:bold;
+}
+
+.stat-row{
+    display:flex;
+    justify-content:space-between;
+    padding:10px 0;
+    border-bottom:1px solid #2d2d2d;
+}
+
+.stat-label{
+    color:#999;
+}
+
+.stat-value{
+    font-weight:bold;
+}
+
+.buy-button{
+    width:100%;
+    margin-top:24px;
+    padding:14px;
+    border:none;
+    border-radius:10px;
+    background:#c8102e;
+    color:white;
+    font-size:1rem;
+    font-weight:bold;
+    cursor:pointer;
+    transition:.2s;
+}
+
+.buy-button:hover{
+    background:#e11d48;
+}
+
+.selected-row{
+    background:rgba(200,16,46,.18);
+}
+
+.selected-row:hover{
+    background:rgba(200,16,46,.25);
+}
+
+/* ---------- Buy Score ---------- */
+
+.detail-score{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin:18px 0 10px;
+    font-weight:600;
+}
+
+.score-bar{
+    width:100%;
+    height:14px;
+    background:#2b2b2b;
+    border-radius:999px;
+    overflow:hidden;
+    margin-bottom:22px;
+}
+
+.score-fill{
+    height:100%;
+    border-radius:999px;
+    transition:width .35s ease;
+}
+
+/* ==========================================================
+   APP LAYOUT
+========================================================== */
+
+.app{
+    display:flex;
+    min-height:100vh;
+    background:#111;
+}
+
+.page-content{
+    flex:1;
+    padding:30px;
+    overflow-y:auto;
+}
+
+/* ==========================================================
+   SIDEBAR
+========================================================== */
+
+.sidebar{
+    width:250px;
+    background:#181818;
+    border-right:1px solid #2b2b2b;
+
+    display:flex;
+    flex-direction:column;
+
+    padding:24px;
+    gap:12px;
+}
+
+.sidebar h2{
+    margin-bottom:20px;
+    color:#c8102e;
+}
+
+.sidebar-button{
+
+    background:#242424;
+    border:none;
+    color:white;
+
+    padding:14px 16px;
+
+    border-radius:10px;
+
+    cursor:pointer;
+
+    text-align:left;
+
+    transition:.2s;
+}
+
+.sidebar-button:hover{
+
+    background:#343434;
+
+}
+
+.sidebar-button.active{
+
+    background:#c8102e;
+
+    font-weight:bold;
+
+}
