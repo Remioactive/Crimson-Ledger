@@ -1,0 +1,59 @@
+body {
+    margin: 0;
+    background: #111111;
+    color: white;
+    font-family: Inter, Arial, sans-serif;
+}
+
+.dashboard {
+    max-width: 1200px;
+    margin: auto;
+    padding: 50px 20px;
+}
+
+.hero {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.hero h1 {
+    color: #c1121f;
+    font-size: 3rem;
+    margin-bottom: 10px;
+}
+
+.hero p {
+    color: #999;
+    font-size: 1.2rem;
+}
+
+.card {
+    background: #1d1d1d;
+    border-radius: 16px;
+    padding: 25px;
+    margin-bottom: 25px;
+    border: 1px solid #2f2f2f;
+}
+
+.card h2 {
+    margin-top: 0;
+    color: white;
+}
+
+.subtitle {
+    color: #999;
+}
+
+.status {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 20px 0;
+}
+
+.dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: orange;
+}
